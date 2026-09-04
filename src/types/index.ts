@@ -16,5 +16,6 @@ export interface VisualizationProps {
   dataset: Dataset;
   theme?: string;
   isPlaying: boolean;
+  playbackKey?: number;
   onAnimationComplete?: () => void;
 }

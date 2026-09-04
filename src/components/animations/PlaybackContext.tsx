@@ -1,33 +1,22 @@
-import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react';
-
-interface PlaybackContextType {
-  isPlaying: boolean;
-  play: () => void;
-  pause: () => void;
-  replay: () => void;
-  reset: () => void;
-  onAnimationComplete: () => void;
-  isReducedMotion: boolean;
-}
-
-const PlaybackContext = createContext<PlaybackContextType | undefined>(undefined);
-
-export const usePlayback = () => {
-  const context = useContext(PlaybackContext);
-  if (!context) {
-    throw new Error('usePlayback must be used within a PlaybackProvider');
-  }
-  return context;
-};
+import React, { useState, useCallback, useRef, useEffect } from 'react';
+import { PlaybackContext } from './usePlayback';
+import { logger } from '../../lib/logger';
 
 export const PlaybackProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isReducedMotion, setIsReducedMotion] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [playbackKey, setPlaybackKey] = useState(1);
+  const [isReducedMotion, setIsReducedMotion] = useState(() => {
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    }
+    return false;
+  });
+
   const playTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setIsReducedMotion(mediaQuery.matches);
     
     const handler = (e: MediaQueryListEvent) => setIsReducedMotion(e.matches);
     mediaQuery.addEventListener('change', handler);
@@ -47,38 +36,41 @@ export const PlaybackProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const play = useCallback(() => {
     clearTimers();
+    logger.info('Playback: Play', { context: 'Playback' });
+    setPlaybackKey((k) => k + 1);
     setIsPlaying(true);
   }, [clearTimers]);
 
   const pause = useCallback(() => {
     clearTimers();
+    logger.info('Playback: Pause', { context: 'Playback' });
     setIsPlaying(false);
   }, [clearTimers]);
 
   const reset = useCallback(() => {
     clearTimers();
+    logger.info('Playback: Reset', { context: 'Playback' });
     setIsPlaying(false);
   }, [clearTimers]);
 
   const replay = useCallback(() => {
     reset();
-    // Use a tiny timeout to ensure React processes the 'false' state
-    // before turning it back to 'true' to trigger re-renders/animations
+    logger.info('Playback: Replay', { context: 'Playback' });
+    setPlaybackKey((k) => k + 1);
     playTimeoutRef.current = window.setTimeout(() => {
       setIsPlaying(true);
     }, 50);
   }, [reset]);
 
   const onAnimationComplete = useCallback(() => {
-    // When animation completes, we can choose to keep it in "played" state
-    // but typically we don't automatically pause unless we want to allow re-trigger.
-    // For now, we do nothing or could fire an event if needed.
+    logger.debug('Playback: Animation cycle finished', { context: 'Playback' });
   }, []);
 
   return (
     <PlaybackContext.Provider
       value={{
         isPlaying: isReducedMotion ? true : isPlaying,
+        playbackKey,
         play,
         pause,
         replay,

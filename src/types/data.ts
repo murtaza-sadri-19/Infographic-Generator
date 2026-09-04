@@ -14,6 +14,8 @@ export interface DataPoint {
 export interface Dataset {
   id: string;
   name: string;
+  subtitle?: string;
+  unit?: string;
   columns: DataColumn[];
   data: DataPoint[];
   createdAt: number;

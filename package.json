@@ -1,7 +1,8 @@
 {
-  "name": "temp-app",
+  "name": "infographik",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "description": "Animated infographic & chart generator built with React 19, Recharts, and Framer Motion",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,6 +13,7 @@
   "dependencies": {
     "clsx": "^2.1.1",
     "framer-motion": "^13.1.1",
+    "html-to-image": "^1.11.13",
     "lucide-react": "^1.37.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
@@ -20,6 +22,7 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",

@@ -4,6 +4,8 @@ export const SAMPLE_DATASETS: Record<string, Dataset> = {
   'tech-growth': {
     id: 'tech-growth',
     name: 'Tech Adoption (2018-2023)',
+    subtitle: 'Smartphone vs Smartwatch household penetration',
+    unit: '%',
     columns: [
       { id: 'year', name: 'Year', type: 'string' },
       { id: 'smartphones', name: 'Smartphones (%)', type: 'number' },
@@ -23,6 +25,8 @@ export const SAMPLE_DATASETS: Record<string, Dataset> = {
   'browser-market': {
     id: 'browser-market',
     name: 'Browser Market Share',
+    subtitle: 'Global desktop & mobile usage share',
+    unit: '%',
     columns: [
       { id: 'browser', name: 'Browser', type: 'string' },
       { id: 'share', name: 'Market Share (%)', type: 'number' },
