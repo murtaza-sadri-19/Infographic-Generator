@@ -62,7 +62,7 @@ export function Header() {
           </div>
         </div>
 
-        {/* Center: Dribbble-Style Pill Navigation */}
+        {/* Center: Dribbble-Style Pill Navigation (Desktop) */}
         <nav className="hidden md:flex items-center p-1 bg-slate-100/90 dark:bg-slate-900/80 rounded-full border border-slate-200/60 dark:border-slate-800/60">
           <button
             type="button"
@@ -104,14 +104,54 @@ export function Header() {
           </button>
         </nav>
 
+        {/* Mobile Chart Selector (Icons only, < md) */}
+        <div className="flex md:hidden items-center p-0.5 bg-slate-100 dark:bg-slate-900 rounded-full border border-slate-200/60 dark:border-slate-800/60">
+          <button
+            type="button"
+            onClick={() => setActiveChart('bar')}
+            title="Bar Chart"
+            className={`p-1.5 rounded-full transition-all ${
+              activeChart === 'bar'
+                ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950 shadow-xs'
+                : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
+            }`}
+          >
+            <BarChart3 className="w-4 h-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveChart('donut')}
+            title="Donut Chart"
+            className={`p-1.5 rounded-full transition-all ${
+              activeChart === 'donut'
+                ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950 shadow-xs'
+                : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
+            }`}
+          >
+            <PieIcon className="w-4 h-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveChart('counter')}
+            title="Counter Stat"
+            className={`p-1.5 rounded-full transition-all ${
+              activeChart === 'counter'
+                ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950 shadow-xs'
+                : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
+            }`}
+          >
+            <Hash className="w-4 h-4" />
+          </button>
+        </div>
+
         {/* Right: Actions */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-3">
           {/* Dataset Selector Pill */}
-          <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-900 rounded-full p-1 border border-slate-200/60 dark:border-slate-800/60">
+          <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-900 rounded-full p-1 border border-slate-200/60 dark:border-slate-800/60">
             <select
               value={activeDatasetId || ''}
               onChange={(e) => setActiveDataset(e.target.value)}
-              className="bg-transparent text-xs font-bold text-slate-800 dark:text-slate-200 px-2 py-0.5 focus:outline-none cursor-pointer"
+              className="max-w-[85px] sm:max-w-[140px] truncate bg-transparent text-xs font-bold text-slate-800 dark:text-slate-200 px-1 sm:px-2 py-0.5 focus:outline-none cursor-pointer"
             >
               {Object.values(datasets).map((ds) => (
                 <option key={ds.id} value={ds.id}>
@@ -123,7 +163,7 @@ export function Header() {
               type="button"
               onClick={handleCreateNew}
               title="Create new dataset"
-              className="w-6 h-6 rounded-full bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700 shadow-xs transition-colors"
+              className="w-6 h-6 rounded-full bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700 shadow-xs transition-colors shrink-0"
             >
               <Plus className="w-3.5 h-3.5" />
             </button>
@@ -132,7 +172,7 @@ export function Header() {
           <button
             type="button"
             onClick={() => setShowHelp(true)}
-            className="w-9 h-9 rounded-full text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-all"
+            className="hidden sm:flex w-9 h-9 rounded-full text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 items-center justify-center transition-all shrink-0"
             title="Guide & CSV Info"
           >
             <HelpCircle className="w-4 h-4" />

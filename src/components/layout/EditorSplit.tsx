@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import type { FC, ComponentType } from 'react';
 import { 
   Plus, 
   Trash2, 
@@ -14,7 +14,8 @@ import { useToast } from '../common/useToast';
 import { useDataStore } from '../../lib/data/store';
 import { useStudioStore } from '../../lib/studioStore';
 import { 
-  COLOR_PALETTES, 
+  COLOR_PALETTES,
+  getPalette,
   STUDIO_BACKDROPS, 
   ASPECT_RATIOS, 
   type BackdropTheme, 
@@ -27,9 +28,10 @@ import type { Dataset as GenericDataset, DataPoint as GenericDataPoint } from '.
 
 interface EditorSplitProps {
   activeSection: 'data' | 'appearance';
+  mobileView: 'stage' | 'data' | 'appearance';
 }
 
-export const EditorSplit: React.FC<EditorSplitProps> = ({ activeSection }) => {
+export const EditorSplit: FC<EditorSplitProps> = ({ activeSection, mobileView }) => {
   const toast = useToast();
   const { datasets, activeDatasetId, addDataset, updateDataset } = useDataStore();
   const { 
@@ -44,13 +46,13 @@ export const EditorSplit: React.FC<EditorSplitProps> = ({ activeSection }) => {
     toggleWatermark 
   } = useStudioStore();
   
-  const activePalette = COLOR_PALETTES[activePaletteId] || COLOR_PALETTES.indigo;
+  const activePalette = getPalette(activePaletteId);
   const genericDataset = activeDatasetId ? datasets[activeDatasetId] : null;
   const visDataset = genericDataset 
     ? adaptDataset(genericDataset, activePalette.colors) 
     : { title: '', points: [] };
 
-  const getChartComponent = (): React.ComponentType<VisualizationProps> => {
+  const getChartComponent = (): ComponentType<VisualizationProps> => {
     switch (activeChart) {
       case 'counter':
         return AnimatedCounter;
@@ -106,12 +108,16 @@ export const EditorSplit: React.FC<EditorSplitProps> = ({ activeSection }) => {
     toast.info('Row removed');
   };
 
+  const sectionToDisplay = mobileView !== 'stage' ? mobileView : activeSection;
+
   return (
-    <div className="flex-1 w-full h-full p-4 sm:p-6 md:p-7 gap-6 flex flex-col lg:flex-row overflow-hidden">
+    <div className="flex-1 w-full h-full p-3 sm:p-5 md:p-6 lg:p-7 gap-4 lg:gap-6 flex flex-col lg:flex-row overflow-hidden">
       {/* Left Modular Card: Studio Inspector */}
-      <div className="w-full lg:w-[440px] xl:w-[460px] bg-white dark:bg-[#11151f] rounded-[30px] shadow-[0_10px_35px_rgba(0,0,0,0.03)] border border-slate-200/70 dark:border-slate-800/80 p-6 flex flex-col h-full overflow-y-auto shrink-0 transition-colors">
+      <div className={`w-full lg:w-[440px] xl:w-[460px] bg-white dark:bg-[#11151f] rounded-[24px] sm:rounded-[30px] shadow-[0_10px_35px_rgba(0,0,0,0.03)] border border-slate-200/70 dark:border-slate-800/80 p-4 sm:p-6 flex-col h-full overflow-y-auto shrink-0 transition-colors ${
+        mobileView === 'stage' ? 'hidden lg:flex' : 'flex'
+      }`}>
         
-        {activeSection === 'data' ? (
+        {sectionToDisplay === 'data' ? (
           <div className="flex flex-col gap-6">
             {/* Header */}
             <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80">
@@ -389,7 +395,9 @@ export const EditorSplit: React.FC<EditorSplitProps> = ({ activeSection }) => {
       </div>
 
       {/* Right Modular Card: Presentation Stage */}
-      <div className="flex-1 bg-white dark:bg-[#11151f] rounded-[32px] shadow-[0_10px_35px_rgba(0,0,0,0.03)] border border-slate-200/70 dark:border-slate-800/80 p-6 sm:p-8 flex flex-col items-center justify-center relative overflow-y-auto transition-colors">
+      <div className={`flex-1 min-w-0 bg-white dark:bg-[#11151f] rounded-[24px] sm:rounded-[32px] shadow-[0_10px_35px_rgba(0,0,0,0.03)] border border-slate-200/70 dark:border-slate-800/80 p-3 sm:p-6 md:p-8 flex-col items-center justify-center relative overflow-y-auto transition-colors ${
+        mobileView !== 'stage' ? 'hidden lg:flex' : 'flex'
+      }`}>
         <div className="w-full max-w-4xl h-full flex items-center justify-center">
           <PresentationCanvas
             visualizationComponent={getChartComponent()}

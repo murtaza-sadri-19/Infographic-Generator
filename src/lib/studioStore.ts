@@ -27,6 +27,8 @@ export const useStudioStore = create<StudioState>()(
       setPalette: (id: string) => {
         if (COLOR_PALETTES[id]) {
           set({ activePaletteId: id });
+        } else {
+          set({ activePaletteId: 'indigo' });
         }
       },
       setBackdrop: (backdrop: BackdropTheme) => set({ activeBackdrop: backdrop }),
@@ -35,7 +37,15 @@ export const useStudioStore = create<StudioState>()(
       toggleWatermark: () => set((state) => ({ showWatermark: !state.showWatermark }))
     }),
     {
-      name: 'infographik-studio-store'
+      name: 'infographik-studio-store',
+      version: 2,
+      migrate: (persistedState: unknown) => {
+        const state = persistedState as Partial<StudioState> | undefined;
+        if (!state || !state.activePaletteId || !COLOR_PALETTES[state.activePaletteId]) {
+          return { ...(state || {}), activePaletteId: 'indigo' } as StudioState;
+        }
+        return state as StudioState;
+      }
     }
   )
 );

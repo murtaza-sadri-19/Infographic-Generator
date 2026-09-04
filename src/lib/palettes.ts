@@ -50,6 +50,14 @@ export const COLOR_PALETTES: Record<string, ColorPalette> = {
   }
 };
 
+export const getPalette = (id?: string): ColorPalette => {
+  if (id && COLOR_PALETTES[id]) return COLOR_PALETTES[id];
+  // Fallback for legacy IDs that might exist in user's localStorage
+  if (id === 'neon' || id === 'ocean') return COLOR_PALETTES.indigo;
+  if (id === 'cyber') return COLOR_PALETTES.terracotta;
+  return COLOR_PALETTES.indigo;
+};
+
 export type BackdropTheme = 'obsidian' | 'sunset' | 'grid' | 'minimal';
 
 export interface StudioBackdrop {
