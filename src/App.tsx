@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { AppShell } from './components/layout/AppShell';
 import { useThemeStore } from './lib/theme';
 import { useDataStore } from './lib/data/store';
@@ -42,6 +43,7 @@ function App() {
     <ErrorBoundary fallbackTitle="Application Error">
       <ToastProvider>
         <AppShell />
+        <Analytics />
       </ToastProvider>
     </ErrorBoundary>
   );
